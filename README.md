@@ -1,32 +1,87 @@
-# RestControllerAdvice와 Swagger 통합 프로젝트
+# RestControllerAdvice와 Swagger 동기화 프로젝트
 
 ## 📌 프로젝트 개요
 
-Spring Boot REST API에서 `@RestControllerAdvice`를 사용하여 모든 API 응답을 공통 포맷으로 통일할 때, **Swagger 문서에는 이러한 변환이 반영되지 않는 문제**를 해결하는 프로젝트입니다.
+Spring Boot REST API에서 `@RestControllerAdvice`를 사용하여 모든 API 응답을 공통 포맷으로 통일할 때, **Swagger 문서의 Response 영역에는 이러한 변환이 반영되지 않는 문제**를 해결하는 프로젝트입니다.
 
 ### 문제 상황
 
 ```java
-// Controller에서는 CompanyDTO를 반환
-@GetMapping("/{id}")
-public CompanyDTO getCompany(@PathVariable Long id) {
-    return new CompanyDTO(id, "회사명", "주소");
+// Controller에서는 Page<CompanyDTO> 를 반환
+@GetMapping("/page")
+public Page<CompanyDTO> getCompanyPage(
+        @Parameter(description = "페이징 정보 (page, size, sort)")
+        Pageable pageable) {
+
+    // 예시 데이터
+    List<CompanyDTO> content = List.of(
+            new CompanyDTO(1L, "회사1", "주소1"),
+            new CompanyDTO(2L, "회사2", "주소2"),
+            new CompanyDTO(3L, "회사3", "주소3")
+    );
+
+    return new PageImpl<>(content, pageable, content.size());
 }
 ```
 
 ```json
 // 실제 API 응답은 RestControllerAdvice에 의해 래핑됨
 {
-  "data": {
-    "id": 1,
-    "name": "회사명",
-    "address": "주소"
-  },
-  "page": null
+  "data": [
+    {
+      "id": 1,
+      "name": "삼성전자",
+      "address": "서울시 강남구"
+    }
+  ],
+  "page": {
+    "currentPage": 1,
+    "totalElement": 3,
+    "size": 20,
+    "totalPages": 1
+  }
 }
 ```
 
 하지만 **Swagger UI에는 원본 응답 형태(`CompanyDTO`)만 표시**되어, 실제 API 응답과 문서가 불일치하는 문제가 발생합니다.
+
+```json
+// swagger response 영역에 표기되는 응답 형태
+{
+  "totalPages": 0,
+  "totalElements": 0,
+  "first": true,
+  "last": true,
+  "size": 0,
+  "content": [
+    {
+      "id": 1,
+      "name": "삼성전자",
+      "address": "서울시 강남구"
+    }
+  ],
+  "number": 0,
+  "sort": {
+    "empty": true,
+    "sorted": true,
+    "unsorted": true
+  },
+  "pageable": {
+    "offset": 0,
+    "sort": {
+      "empty": true,
+      "sorted": true,
+      "unsorted": true
+    },
+    "pageNumber": 0,
+    "pageSize": 0,
+    "paged": true,
+    "unpaged": true
+  },
+  "numberOfElements": 0,
+  "empty": true
+}
+```
 
 ---
 
