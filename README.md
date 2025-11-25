@@ -306,6 +306,12 @@ public class CompanyController {
 
 브라우저에서 `http://localhost:8080/swagger-ui/index.html` 접속
 
+<img width="425" height="374" alt="스크린샷 2025-11-25 오후 10 49 19" src="https://github.com/user-attachments/assets/b9876268-d83d-446f-a7f1-f951f723d228" /><br>
+
+<img width="447" height="488" alt="스크린샷 2025-11-25 오후 10 49 30" src="https://github.com/user-attachments/assets/32ccf1c2-145d-450b-9865-eab1262d6618" /><br>
+
+<img width="449" height="474" alt="스크린샷 2025-11-25 오후 10 49 38" src="https://github.com/user-attachments/assets/b85d897f-9473-4f74-9dcd-6ecb65e0cfc4" />   
+
 ---
 
 ## 🔧 기술 스택
